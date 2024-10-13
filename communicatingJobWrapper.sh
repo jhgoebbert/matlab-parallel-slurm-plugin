@@ -41,18 +41,18 @@ PARALLEL_SERVER_DEBUG=${PARALLEL_SERVER_DEBUG:="${MDCE_DEBUG}"}
 echo -e "The scheduler has allocated the following nodes to this job:\n${SLURM_NODELIST:?"Node list undefined"}"
 
 # Create full path to mw_mpiexec if needed.
-FULL_MPIEXEC=${PARALLEL_SERVER_CMR:+${PARALLEL_SERVER_CMR}/bin/}mw_mpiexec
+#FULL_MPIEXEC=${PARALLEL_SERVER_CMR:+${PARALLEL_SERVER_CMR}/bin/}mw_mpiexec
 
 # Label stdout/stderr with the rank of the process
-MPI_VERBOSE=-l
+#MPI_VERBOSE=-l
 
 # Increase the verbosity of mpiexec if PARALLEL_SERVER_DEBUG is set and not false
-if [ ! -z "${PARALLEL_SERVER_DEBUG}" ] && [ "${PARALLEL_SERVER_DEBUG}" != "false" ] ; then
-    MPI_VERBOSE="${MPI_VERBOSE} -v -print-all-exitcodes"
-fi
+#if [ ! -z "${PARALLEL_SERVER_DEBUG}" ] && [ "${PARALLEL_SERVER_DEBUG}" != "false" ] ; then
+#    MPI_VERBOSE="${MPI_VERBOSE} -v -print-all-exitcodes"
+#fi
 
 # Unset the hostname variables to ensure they don't get forwarded by mpiexec
-unset HOST HOSTNAME
+#unset HOST HOSTNAME
 
 # Construct the command to run.
 # CMD="\"${FULL_MPIEXEC}\" -bind-to core:${PARALLEL_SERVER_NUM_THREADS} ${MPI_VERBOSE} -n ${PARALLEL_SERVER_TOTAL_TASKS} \
