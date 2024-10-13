@@ -21,6 +21,13 @@
 
 # Copyright 2015-2022 The MathWorks, Inc.
 
+# load modules
+module purge
+module load Stages/2024
+module load GCC
+module load ParaStationMPI
+module load MATLAB
+
 # If PARALLEL_SERVER_ environment variables are not set, assign any
 # available values with form MDCE_ for backwards compatibility
 PARALLEL_SERVER_CMR=${PARALLEL_SERVER_CMR:="${MDCE_CMR}"}
@@ -48,8 +55,10 @@ fi
 unset HOST HOSTNAME
 
 # Construct the command to run.
-CMD="\"${FULL_MPIEXEC}\" -bind-to core:${PARALLEL_SERVER_NUM_THREADS} ${MPI_VERBOSE} -n ${PARALLEL_SERVER_TOTAL_TASKS} \
-    \"${PARALLEL_SERVER_MATLAB_EXE}\" ${PARALLEL_SERVER_MATLAB_ARGS}"
+# CMD="\"${FULL_MPIEXEC}\" -bind-to core:${PARALLEL_SERVER_NUM_THREADS} ${MPI_VERBOSE} -n ${PARALLEL_SERVER_TOTAL_TASKS} \
+#     \"${PARALLEL_SERVER_MATLAB_EXE}\" ${PARALLEL_SERVER_MATLAB_ARGS}"
+
+CMD="srun \"${PARALLEL_SERVER_MATLAB_EXE}\" ${PARALLEL_SERVER_MATLAB_ARGS}"
 
 # Echo the command so that it is shown in the output log.
 echo $CMD

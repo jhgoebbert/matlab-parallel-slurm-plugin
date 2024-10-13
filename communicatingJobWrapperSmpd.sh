@@ -21,6 +21,18 @@
 
 # Copyright 2015-2022 The MathWorks, Inc.
 
+# load modules 
+module purge
+module load Stages/2024
+module load GCC
+module load ParaStationMPI
+module load MATLAB
+export LD_LIBRARY_PATH=/p/software/juwels/stages/2024/software/X11/20230603-GCCcore-12.3.0/lib64:$LD_LIBRARY_PATH
+
+if [ ! $TZ ] ; then
+    export TZ=$(timedatectl | grep "Time zone" | cut -d ":" -f2 | cut -d " " -f2)
+fi
+
 # If PARALLEL_SERVER_ environment variables are not set, assign any
 # available values with form MDCE_ for backwards compatibility
 PARALLEL_SERVER_CMR=${PARALLEL_SERVER_CMR:="${MDCE_CMR}"}
@@ -157,11 +169,11 @@ chooseMachineArg() {
 cleanupAndExit() {
     EXIT_CODE=${?}
 
-    echo "Stopping SMPD ..."
+    # echo "Stopping SMPD ..."
 
-    STOP_SMPD_CMD="srun --ntasks-per-node=1 --ntasks=${SLURM_JOB_NUM_NODES} ${FULL_SMPD} -shutdown -phrase MATLAB -port ${SMPD_PORT}"
-    echo $STOP_SMPD_CMD
-    eval $STOP_SMPD_CMD
+    # STOP_SMPD_CMD="srun --ntasks-per-node=1 --ntasks=${SLURM_JOB_NUM_NODES} ${FULL_SMPD} -shutdown -phrase MATLAB -port ${SMPD_PORT}"
+    # echo $STOP_SMPD_CMD
+    # eval $STOP_SMPD_CMD
 
     echo "Exiting with code: ${EXIT_CODE}"
     exit ${EXIT_CODE}
@@ -231,9 +243,11 @@ runMpiexec() {
 
     ENVS_TO_FORWARD="PARALLEL_SERVER_DECODE_FUNCTION,PARALLEL_SERVER_STORAGE_LOCATION,PARALLEL_SERVER_STORAGE_CONSTRUCTOR,PARALLEL_SERVER_JOB_LOCATION,PARALLEL_SERVER_DEBUG,PARALLEL_SERVER_LICENSE_NUMBER,MLM_WEB_LICENSE,MLM_WEB_USER_CRED,MLM_WEB_ID"
     LEGACY_ENVS_TO_FORWARD="MDCE_DECODE_FUNCTION,MDCE_STORAGE_LOCATION,MDCE_STORAGE_CONSTRUCTOR,MDCE_JOB_LOCATION,MDCE_DEBUG,MDCE_LICENSE_NUMBER"
-    CMD="\"${FULL_MPIEXEC}\" -smpd -phrase MATLAB -port ${SMPD_PORT} \
-        -l ${MACHINE_ARG} -genvlist $ENVS_TO_FORWARD,$LEGACY_ENVS_TO_FORWARD \
-        \"${PARALLEL_SERVER_MATLAB_EXE}\" ${PARALLEL_SERVER_MATLAB_ARGS}"
+    # CMD="\"${FULL_MPIEXEC}\" -smpd -phrase MATLAB -port ${SMPD_PORT} \
+    #     -l ${MACHINE_ARG} -genvlist $ENVS_TO_FORWARD,$LEGACY_ENVS_TO_FORWARD \
+    #     \"${PARALLEL_SERVER_MATLAB_EXE}\" ${PARALLEL_SERVER_MATLAB_ARGS}"
+
+    CMD="srun \"${PARALLEL_SERVER_MATLAB_EXE}\" ${PARALLEL_SERVER_MATLAB_ARGS}"
 
     # As a debug stage: echo the command ...
     echo $CMD
@@ -253,10 +267,10 @@ MAIN() {
     # Install a trap to ensure that SMPDs are closed if something errors or the
     # job is cancelled.
     trap "cleanupAndExit" 0 1 2 15
-    chooseSmpdHosts
-    chooseSmpdPort
-    launchSmpds
-    chooseMachineArg
+    # chooseSmpdHosts
+    # chooseSmpdPort
+    # launchSmpds
+    # chooseMachineArg
     runMpiexec
     exit 0 # Explicitly exit 0 to trigger cleanupAndExit
 }
