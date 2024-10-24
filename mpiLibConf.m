@@ -10,7 +10,9 @@ function [primary, extras] = mpiLibConf
 %
 %   To supply an alternative MPI implementation, create a MATLAB file called
 %   "mpiLibConf" and place it on the MATLAB path. The recommended location is
-%   <matlabroot>/toolbox/parallel/user.
+%   <matlabroot>/toolbox/parallel/user/
+%   but we are adding it to
+%   <matlabroot>/support_packages/matlab_parallel_server/scripts/
 %
 %   Under all circumstances, the MPI library must support all MPI-1
 %   functions. Additionally, the MPI library must support null arguments to
@@ -38,13 +40,15 @@ if strcmp(dfcn, 'parallel.internal.decode.localMpiexecTask')
     [primary, extras] = parallel.internal.mpi.libConfs( 'default' );
 else
     % We're not running the local scheduler or using the default MATLAB libmpich
-    primary = '/p/software/juwels/stages/2024/software/psmpi/5.9.2-1-GCC-12.3.0/lib/libmpich.so';
+    primary = '${EBROOTPSMPI}/lib/libmpich.so';
 
     % mvapich has two extra libraries libmpl.so and libopa.so  
     %  use # ldd <mpi-root-path>/lib/libmpich.so
     %   Any libraries from the mpich/mvapich install location need to be included in extras
     extras = {
-          '/p/software/juwels/stages/2024/software/psmpi/5.9.2-1-GCC-12.3.0/lib/libmpl.so',
-	  '/p/software/juwels/stages/2024/software/psmpi/5.9.2-1-GCC-12.3.0/lib/libopa.so',
+          '${EBROOTPSMPI}/lib/libmpl.so',
+	  '${EBROOTPSMPI}/lib/libopa.so',
+	  % Libs from 'ldd ${EBROOTPSMPI}/lib/libmpich.so'
+% EXTRALIBS
     };
 end

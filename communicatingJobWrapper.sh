@@ -41,24 +41,6 @@ PARALLEL_SERVER_DEBUG=${PARALLEL_SERVER_DEBUG:="${MDCE_DEBUG}"}
 # Echo the nodes that the scheduler has allocated to this job:
 echo -e "The scheduler has allocated the following nodes to this job:\n${SLURM_NODELIST:?"Node list undefined"}"
 
-# Create full path to mw_mpiexec if needed.
-#FULL_MPIEXEC=${PARALLEL_SERVER_CMR:+${PARALLEL_SERVER_CMR}/bin/}mw_mpiexec
-
-# Label stdout/stderr with the rank of the process
-#MPI_VERBOSE=-l
-
-# Increase the verbosity of mpiexec if PARALLEL_SERVER_DEBUG is set and not false
-#if [ ! -z "${PARALLEL_SERVER_DEBUG}" ] && [ "${PARALLEL_SERVER_DEBUG}" != "false" ] ; then
-#    MPI_VERBOSE="${MPI_VERBOSE} -v -print-all-exitcodes"
-#fi
-
-# Unset the hostname variables to ensure they don't get forwarded by mpiexec
-#unset HOST HOSTNAME
-
-# Construct the command to run.
-# CMD="\"${FULL_MPIEXEC}\" -bind-to core:${PARALLEL_SERVER_NUM_THREADS} ${MPI_VERBOSE} -n ${PARALLEL_SERVER_TOTAL_TASKS} \
-#     \"${PARALLEL_SERVER_MATLAB_EXE}\" ${PARALLEL_SERVER_MATLAB_ARGS}"
-
 CMD="srun \"${PARALLEL_SERVER_MATLAB_EXE}\" ${PARALLEL_SERVER_MATLAB_ARGS}"
 
 # Echo the command so that it is shown in the output log.
