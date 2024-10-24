@@ -59,12 +59,7 @@ cleanupAndExit() {
 #########################################################################################
 # load modules
 loadModules() {
-    module purge
-    module load Stages/${STAGE}
-    module load GCC
-    module load ParaStationMPI
-    module load MATLAB
-    export LD_LIBRARY_PATH=/p/software/juwels/stages/2024/software/X11/20230603-GCCcore-12.3.0/lib64:$LD_LIBRARY_PATH
+# EXTRAMODULES
 }
 
 #########################################################################################
